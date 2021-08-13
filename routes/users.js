@@ -7,7 +7,7 @@ const userManager = require('../managers/userManager');
 router.get('/info', checkAuth, async (req, res, next) => {
   res.json({
     message: "success",
-    userData: req.userData
+    data: req.userData
   });
 });
 
@@ -18,9 +18,7 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/register', async (req, res, next) => {
   let response = await userManager.register(req.body);
-  return res.json({
-    success: response
-  });
+  return res.json(response);
 })
 
 module.exports = router;
