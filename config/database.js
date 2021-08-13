@@ -7,19 +7,4 @@ pool = async () => {
     return pool;
 }
 
-
-
-queryAsync = async (query) => {
-    try {
-        await sql.connect(connectionString);
-        const result = await sql.query(query)
-        console.dir(result)
-        result.recordset.forEach(item => {
-            console.log(item)
-        })
-    } catch (err) {
-        console.log(err)
-    }
-}
-
-module.exports = { queryAsync, pool }
+module.exports = { pool }
