@@ -33,16 +33,16 @@ register = async (data) => {
 
         const encryptedPassword = CryptoJS.AES.encrypt(data.password, constants.PasswordSecret);
 
-        request.input('FirstName', data.firstName)
-        request.input('LastName', data.lastName)
-        request.input('Username', data.userName)
-        request.input('Password', encryptedPassword)
-        request.input('Email', data.email)
-        request.input('IsApproved', true)
-        request.input('IsActive', true)
-        request.input('CreatedDate', sql.DateTime, moment().format())
+        let response = await request.input('FirstName', data.firstName)
+            .input('LastName', data.lastName)
+            .input('Username', data.userName)
+            .input('Password', encryptedPassword)
+            .input('Email', data.email)
+            .input('IsApproved', true)
+            .input('IsActive', true)
+            .input('CreatedDate', sql.DateTime, moment().format())
+            .query(query)
 
-        let response = await request.query(query);
         return {
             messageType: response.rowsAffected[0] > 0 ? 'success' : 'danger'
         };
@@ -61,8 +61,8 @@ login = async (data) => {
         const pool = await database.pool();
         const request = pool.request();
 
-        request.input("email", data.email)
-        let queryResponse = await request.query(query);
+        let queryResponse = await request.input("email", data.email)
+            .query(query);
 
         let customer = queryResponse.recordset[0];
 
