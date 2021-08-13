@@ -6,10 +6,14 @@ const sql = require('mssql');
 const moment = require('moment');
 const CryptoJS = require("crypto-js");
 const constants = require('../config/constants');
+const jwt = require('jsonwebtoken');
+const checkAuth = require('../managers/checkauth');
 
 /* GET users listing. */
-router.get('/', async (req, res, next) => {
+router.get('/info', checkAuth, async (req, res, next) => {
   res.json({
+    message: "success",
+    userData: req.userData
   });
 });
 
@@ -31,7 +35,20 @@ router.post('/login', async (req, res, next) => {
     let decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
 
     if (decryptedPassword === req.body.password) {
-      res.json(customer)
+      const token = jwt.sign({
+        userName: customer.Username,
+        email: customer.Email,
+        id: customer.Id
+      },
+        constants.TokenSecretKey,
+        {
+          expiresIn: "2h"
+        }
+      )
+
+      res.json({
+        token: token
+      })
     } else {
       res.json({
         message: 'wrong password or email'
